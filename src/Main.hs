@@ -4,13 +4,13 @@ import Graphics.Gloss
 import Graphics.Gloss.Data.ViewPort
 import Graphics.Gloss.Data.Color
 
-import Particle
+import ParticleSystem
 
 window :: Display
 window = FullScreen
 
 main :: IO ()
-main = simulate window white 60 newParticle drawParticle updateScene
+main = simulate window white 60 newParticleSystem drawParticleSystem updateScene
 
-updateScene :: ViewPort -> Float -> Particle -> Particle
-updateScene _ ms p = updateParticle ms p
+updateScene :: ViewPort -> Float -> ParticleSystem -> ParticleSystem
+updateScene _ ms ps = updateParticleSystem ms ps
