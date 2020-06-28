@@ -6,7 +6,7 @@ module ParticleSystem
 ) where
 
 import Graphics.Gloss
-import Particle (Particle, newParticle, updateParticle, drawParticle)
+import Particle (Particle, newParticle, updateParticle, drawParticle, deadParticle)
 
 data ParticleSystem = ParticleSystem { position :: Point
                                      , elapsed :: Float
@@ -16,7 +16,7 @@ data ParticleSystem = ParticleSystem { position :: Point
 newParticleSystem :: ParticleSystem
 newParticleSystem = ParticleSystem { position = (0, -200)
                                    , elapsed = 0
-                                   , birthRate = 2
+                                   , birthRate = 1
                                    , particles = [] }
 
 updateParticleSystem :: Float -> ParticleSystem -> ParticleSystem
@@ -25,7 +25,15 @@ updateParticleSystem ms ps = ps { elapsed = elapsed'
   where elapsed' = (elapsed ps) + ms
         elapsedSecond = fromIntegral $ (floor elapsed') - (floor $ elapsed ps)
         particlesToCreate = (birthRate ps) * elapsedSecond
-        particles' = map (updateParticle ms) (particles ps) ++ (take (floor particlesToCreate) $ repeat newParticle)
+        particles' = removeDeadParticles .
+                     map (updateParticle ms) $
+                     addParticles (floor particlesToCreate) (particles ps)
+
+addParticles :: Int -> [Particle] -> [Particle]
+addParticles n ps = ps ++ (take n $ repeat newParticle)
+
+removeDeadParticles :: [Particle] -> [Particle]
+removeDeadParticles ps = filter (not . deadParticle) ps
 
 drawParticleSystem :: ParticleSystem -> Picture
 drawParticleSystem ps = Pictures $ [origin, debug] ++ particlesPictures

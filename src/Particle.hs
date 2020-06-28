@@ -3,6 +3,7 @@ module Particle
 , newParticle
 , updateParticle
 , drawParticle
+, deadParticle
 ) where
 
 import Graphics.Gloss
@@ -31,3 +32,6 @@ drawParticle p = translate x y $ particlePicture
   where (x, y) = position p
         particlePicture = color (withAlpha alpha black) $ circleSolid 16
         alpha = max (((lifetime p) - (elapsed p)) / (lifetime p)) 0
+
+deadParticle :: Particle -> Bool
+deadParticle p = (elapsed p) > (lifetime p)
