@@ -14,12 +14,12 @@ data Particle = Particle { position :: Point
                          , elapsed :: Float
                          , lifetime :: Float }
 
-newParticle :: Particle
-newParticle = Particle { position = (0, -200)
-                       , velocity = (0, 4)
-                       , bgColor = black
-                       , elapsed = 0
-                       , lifetime = 1.6 }
+newParticle :: Point -> Particle
+newParticle pos = Particle { position = pos
+                           , velocity = (0, 4)
+                           , bgColor = black
+                           , elapsed = 0
+                           , lifetime = 1.6 }
 
 updateParticle :: Float -> Particle -> Particle
 updateParticle ms p = p { position = (x + vx, y + vy)

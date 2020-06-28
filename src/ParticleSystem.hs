@@ -27,10 +27,10 @@ updateParticleSystem ms ps = ps { elapsed = elapsed'
         particlesToCreate = (birthRate ps) * elapsedSecond
         particles' = removeDeadParticles .
                      map (updateParticle ms) $
-                     addParticles (floor particlesToCreate) (particles ps)
+                    (particles ps) ++ (spawnParticles ps (floor particlesToCreate))
 
-addParticles :: Int -> [Particle] -> [Particle]
-addParticles n ps = ps ++ (take n $ repeat newParticle)
+spawnParticles :: ParticleSystem -> Int -> [Particle]
+spawnParticles ps n = take n . repeat $ newParticle (position ps)
 
 removeDeadParticles :: [Particle] -> [Particle]
 removeDeadParticles ps = filter (not . deadParticle) ps
