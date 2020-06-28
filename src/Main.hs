@@ -14,20 +14,23 @@ drawModel :: Int -> Picture
 drawModel n = text $ show n
 
 updateModel :: ViewPort -> Float -> Particle -> Particle
-updateModel _ ms p = p { position = (x, y + 2), elapsed = (elapsed p) + ms }
-  where (x, y) = position p
+updateModel _ ms p = p { position = (x + vx, y + vy), elapsed = (elapsed p) + ms }
+  where (x, y)  = position p
+        (vx, vy) = velocity p
 
 --------------------------------------------------------------------------
 data Particle = Particle { position :: Point
+                         , velocity :: Point
                          , bgColor :: Color
                          , elapsed :: Float
                          , lifetime :: Float }
 
 newParticle :: Particle
 newParticle = Particle { position = (0, -200)
+                       , velocity = (0, 4)
                        , bgColor = black
                        , elapsed = 0
-                       , lifetime = 3}
+                       , lifetime = 1.6}
 
 drawParticle :: Particle -> Picture
 drawParticle p = translate x y $ particlePicture
