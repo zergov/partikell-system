@@ -19,9 +19,10 @@ newParticleSystem = ParticleSystem { position = (0, -200)
                                    , birthRate = 1
                                    , particles = [] }
 
-updateParticleSystem :: Float -> ParticleSystem -> ParticleSystem
-updateParticleSystem ms ps = ps { elapsed = elapsed'
-                                , particles = particles' }
+updateParticleSystem :: Float -> ParticleSystem -> IO ParticleSystem
+updateParticleSystem ms ps = do
+  return $ ps { elapsed = elapsed'
+              , particles = particles' }
   where elapsed' = (elapsed ps) + ms
         elapsedSecond = fromIntegral $ (floor elapsed') - (floor $ elapsed ps)
         particlesToCreate = (birthRate ps) * elapsedSecond
@@ -35,8 +36,9 @@ spawnParticles ps n = take n . repeat $ newParticle (position ps)
 removeDeadParticles :: [Particle] -> [Particle]
 removeDeadParticles ps = filter (not . deadParticle) ps
 
-drawParticleSystem :: ParticleSystem -> Picture
-drawParticleSystem ps = Pictures $ [origin, debug] ++ particlesPictures
+drawParticleSystem :: ParticleSystem -> IO Picture
+drawParticleSystem ps = do
+  return $ Pictures $ [origin, debug] ++ particlesPictures
   where (x, y) = position ps
         origin = translate x y $ circle 8
         particlesPictures = drawParticle <$> (particles ps)
