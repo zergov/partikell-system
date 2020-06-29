@@ -8,4 +8,4 @@ $ cabal install
 $ cabal run
 ```
 
-[](https://raw.githubusercontent.com/zergov/partikell-system/master/assets/particles.gif?token=AB7GWLKLOZ6J3FUTMVLZPSS7AKRKY)
+![](https://raw.githubusercontent.com/zergov/partikell-system/master/assets/particles.gif?token=AB7GWLKLOZ6J3FUTMVLZPSS7AKRKY)
