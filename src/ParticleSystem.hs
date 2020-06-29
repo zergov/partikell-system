@@ -5,33 +5,38 @@ module ParticleSystem
 , drawParticleSystem
 ) where
 
+import System.Random
 import Graphics.Gloss
 import Particle (Particle, newParticle, updateParticle, drawParticle, deadParticle)
 
 data ParticleSystem = ParticleSystem { position :: Point
                                      , elapsed :: Float
-                                     , birthRate :: Float
-                                     , particles :: [Particle] }
+                                     , particles :: [Particle]
+                                     , velocityX :: (Float, Float)
+                                     , velocityY :: (Float, Float) }
 
 newParticleSystem :: ParticleSystem
 newParticleSystem = ParticleSystem { position = (0, -200)
                                    , elapsed = 0
-                                   , birthRate = 1
-                                   , particles = [] }
+                                   , particles = []
+                                   , velocityX = (-4, 4)
+                                   , velocityY = (10, 2) }
 
 updateParticleSystem :: Float -> ParticleSystem -> IO ParticleSystem
 updateParticleSystem ms ps = do
-  return $ ps { elapsed = elapsed'
+  newParticles <- (spawnParticles ps 1)
+  let particles' = removeDeadParticles . map (updateParticle ms) $ (particles ps) ++ newParticles
+  return $ ps { elapsed = (elapsed ps) + ms
               , particles = particles' }
-  where elapsed' = (elapsed ps) + ms
-        elapsedSecond = fromIntegral $ (floor elapsed') - (floor $ elapsed ps)
-        particlesToCreate = (birthRate ps) * elapsedSecond
-        particles' = removeDeadParticles .
-                     map (updateParticle ms) $
-                    (particles ps) ++ (spawnParticles ps (floor particlesToCreate))
 
-spawnParticles :: ParticleSystem -> Int -> [Particle]
-spawnParticles ps n = take n . repeat $ newParticle (position ps)
+spawnParticles :: ParticleSystem -> Int -> IO [Particle]
+spawnParticles ps n = sequence . take n . repeat $ spawnParticle ps
+
+spawnParticle :: ParticleSystem -> IO Particle
+spawnParticle ps = do
+  vx <- randomRIO (velocityX ps)
+  vy <- randomRIO (velocityY ps)
+  return $ newParticle (position ps) (vx, vy)
 
 removeDeadParticles :: [Particle] -> [Particle]
 removeDeadParticles ps = filter (not . deadParticle) ps

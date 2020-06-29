@@ -58,7 +58,8 @@ executable partikell-system
 
   -- Other library packages from which modules are imported.
   build-depends:       base,
-                       gloss
+                       gloss,
+                       random
 
   -- Directories containing source files.
   hs-source-dirs:      src
